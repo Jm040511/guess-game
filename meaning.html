@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify-style Music Player</title>
+    
+    <!-- Link to Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #121212;
+            font-family: Arial, sans-serif;
+            color: #fff;
+        }
+
+        .content-container {
+            text-align: center;
+            max-width: 300px;
+            padding: 20px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            background-color: #333;
+        }
+
+        .player-container {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            color: #b3b3b3;
+        }
+
+        .album-art {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .album-art img {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 5px;
+        }
+
+        .track-info h1 {
+            font-size: 20px;
+            margin: 0;
+            color: #fff;
+        }
+
+        .track-info p {
+            font-size: 14px;
+            margin: 5px 0 20px;
+            color: #b3b3b3;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #b3b3b3;
+        }
+
+        .progress-bar {
+            flex-grow: 1;
+            height: 4px;
+            background-color: #404040;
+            margin: 0 10px;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            width: 0%;
+            height: 100%;
+            background-color: #1DB954;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #fff;
+        }
+
+        .controls button {
+            background-color: transparent;
+            border: 1px solid transparent;
+            color: #b3b3b3;
+            cursor: pointer;
+            outline: none;
+            font-size: 20px;
+            border-radius: 4px;
+            padding: 8px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .controls button:hover {
+            background-color: #333;
+            color: #1DB954;
+            border-color: #1DB954;
+        }
+
+        #playPauseButton {
+            background-color: #1DB954;
+            color: #fff;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+            font-size: 24px;
+        }
+
+        #playPauseButton:hover {
+            background-color: #1AAE3C;
+        }
+
+        /* Responsive styling */
+        @media (max-width: 600px) {
+            .album-art img {
+                max-width: 90%;
+            }
+            .track-info h1 {
+                font-size: 18px;
+            }
+            .track-info p {
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
+            #playPauseButton {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content-container">
+        <div class="player-container">
+            <div class="album-art">
+                <img src="img/iloveu.jpg" alt="Album Art">
+            </div>
+            <div class="track-info">
+                <h1>I Love You So</h1>
+                <p>The Walters</p>
+            </div>
+            <div class="progress-container">
+                <span id="current-time">0:03</span>
+                <div class="progress-bar">
+                    <div class="progress-bar-fill" id="progress-fill"></div>
+                </div>
+                <span id="duration">-2:36</span>
+            </div>
+            <div class="controls">
+                <button onclick="shuffle()"><i class="fas fa-random"></i></button>
+                <button onclick="rewind()"><i class="fas fa-step-backward"></i></button>
+                <button id="playPauseButton" onclick="togglePlay()"><i id="playPauseIcon" class="fas fa-play"></i></button>
+                <button onclick="forward()"><i class="fas fa-step-forward"></i></button>
+                <button onclick="repeat()"><i class="fas fa-redo"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="music" src="music/The Walters -- I Love You So.mp3" preload="metadata"></audio>
+
+    <script>
+        const audio = document.getElementById("music");
+        const playPauseButton = document.getElementById("playPauseButton");
+        const playPauseIcon = document.getElementById("playPauseIcon");
+        const progressFill = document.getElementById("progress-fill");
+        const currentTimeDisplay = document.getElementById("current-time");
+        const durationDisplay = document.getElementById("duration");
+
+        document.addEventListener("DOMContentLoaded", () => {
+            audio.play().catch(error => console.error("Autoplay was prevented:", error));
+        });
+
+        audio.onloadedmetadata = () => {
+            durationDisplay.textContent = formatTime(audio.duration);
+        };
+
+        function togglePlay() {
+            if (audio.paused) {
+                audio.play();
+                playPauseIcon.classList.replace("fa-play", "fa-pause");
+            } else {
+                audio.pause();
+                playPauseIcon.classList.replace("fa-pause", "fa-play");
+            }
+        }
+
+        audio.ontimeupdate = () => {
+            const progress = (audio.currentTime / audio.duration) * 100;
+            progressFill.style.width = `${progress}%`;
+            currentTimeDisplay.textContent = formatTime(audio.currentTime);
+        };
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        function rewind() { audio.currentTime = Math.max(0, audio.currentTime - 10); }
+        function forward() { audio.currentTime = Math.min(audio.duration, audio.currentTime + 10); }
+        function shuffle() { console.log("Shuffle function"); }
+        function repeat() { console.log("Repeat function"); }
+    </script>
+</body>
+</html>

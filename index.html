@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>Guess the Word Game</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #e9ecef;
+            font-family: Arial, sans-serif;
+        }
+        .game-container {
+            text-align: center;
+            max-width: 350px;
+            padding: 30px;
+            border-radius: 15px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-out;
+            width: 100%; /* Full width on smaller screens */
+            margin: 10px; /* Margin for small devices */
+        }
+        .game-container p {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        .description {
+            font-size: 16px;
+            color: #555;
+            margin-top: 5px;
+        }
+        #game-image {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            border-radius: 10px;
+            margin-top: 15px;
+            transition: transform 0.3s ease;
+        }
+        #game-image:hover {
+            transform: scale(1.05); /* Enlarge image on hover */
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 15px;
+            width: 100%;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus {
+            border-color: #28a745; /* Green border on focus */
+            outline: none;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            margin-top: 15px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        #submit-button {
+            background-color: #28a745;
+            color: #fff;
+        }
+        #submit-button:hover {
+            background-color: #218838;
+            transform: translateY(-2px); /* Button lift effect */
+        }
+        .message {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        #meaning-button {
+            display: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            margin-top: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        #meaning-button:hover {
+            background-color: #0069d9;
+            transform: translateY(-2px);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive styling for mobile */
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 20px;
+                max-width: 90%;
+            }
+            .game-container p {
+                font-size: 16px;
+            }
+            .description {
+                font-size: 14px;
+            }
+            #game-image {
+                max-width: 200px;
+            }
+            input[type="text"] {
+                padding: 8px;
+                font-size: 14px;
+            }
+            button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+            .message {
+                font-size: 16px;
+            }
+            #meaning-button {
+                font-size: 12px;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <p class="description">What type of flower is this?</p>
+        <img id="game-image" src="img/gerberas.jpg" alt="Guess the word image">
+        <p class="description">Hint: This is a Transvaal daisy.</p>
+        <input type="text" id="guess-input" placeholder="Enter your guess here">
+        <button id="submit-button" onclick="checkGuess()">Submit Guess</button>
+        <div id="message" class="message"></div>
+        <button id="meaning-button" onclick="goToMeaningPage()">
+            Want to know what these 3 Gerberas mean?</button>
+    </div>
+
+    <script>
+        const answer = "gerbera daisy";
+        const messageElement = document.getElementById("message");
+        const guessInput = document.getElementById("guess-input");
+        const meaningButton = document.getElementById("meaning-button");
+        const submitButton = document.getElementById("submit-button");
+
+        function checkGuess() {
+            const guess = guessInput.value.toLowerCase().trim();
+            if (guess === answer) {
+                messageElement.textContent = "Correct! 🎉";
+                messageElement.style.color = "#28a745";
+                guessInput.disabled = true;
+                submitButton.style.display = "none";
+                meaningButton.style.display = "inline-block";
+            } else {
+                messageElement.textContent = "Try again!";
+                messageElement.style.color = "#ff4d4d";
+                guessInput.value = "";
+            }
+        }
+
+        function goToMeaningPage() {
+            window.location.href = "meaning.html";
+        }
+    </script>
+</body>
+</html>
